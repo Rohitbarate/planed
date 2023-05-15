@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "368860883862",
+    "project_id": "planed-a5c5d",
+    "storage_bucket": "planed-a5c5d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368860883862:android:230102830f1c5e656b8bb7",
+        "android_client_info": {
+          "package_name": "com.planed"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368860883862-esqf7k6eqenq9ss5j4p8q5jqh4tdo8bb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.planed",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "368860883862-ubfirn2urs8lr6kor75gruntdoubmhh9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIhzZfLidOwLHtD2jXT9_e3Vr9-L3nraI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368860883862-ubfirn2urs8lr6kor75gruntdoubmhh9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
