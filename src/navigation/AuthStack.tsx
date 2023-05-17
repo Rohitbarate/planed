@@ -4,6 +4,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import Register from '../screens/Register';
 import GetOtherData from '../screens/GetOtherData';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import UserExist from '../screens/UserExist';
+import ValidatePassword from '../screens/ValidatePassword';
 
 const AuthStack = () => {
   const Stack = createNativeStackNavigator();
@@ -27,6 +29,16 @@ const AuthStack = () => {
         //   animation:'slide_from_bottom'
         // }}
         
+      />
+       <Stack.Screen
+        name="userExist"
+        component={UserExist}
+       
+      />
+       <Stack.Screen
+        name="checkpass"
+        component={ValidatePassword}
+       
       />
     </Stack.Navigator>
   );

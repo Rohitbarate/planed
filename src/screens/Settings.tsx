@@ -30,9 +30,9 @@ const Settings = () => {
   const signOut = async () => {
     try {
       setLoading(true);
-      if (user.password.length === 0) {
-        await GoogleSignin.signOut();
-      }
+      // if (user.password.length === 0) {
+      await GoogleSignin.signOut();
+      // }
       logout();
       await AsyncStorage.removeItem('user');
       setLoading(false);
@@ -45,11 +45,9 @@ const Settings = () => {
 
   return (
     <View style={{flex: 1, alignItems: 'center'}}>
-      <Text style={{color: '#000'}}>
-        {user.fName} {user.lName}
-      </Text>
+      <Text style={{color: '#000'}}>{user.name}</Text>
       <Text style={{color: '#000'}}>{user.email}</Text>
-      <Text style={{color: '#000'}}>{user.phoneNo}</Text>
+      <Text style={{color: '#000'}}>{user.mobileNo}</Text>
       <TouchableOpacity
         style={{
           paddingVertical: 15,

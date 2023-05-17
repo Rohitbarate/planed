@@ -11,6 +11,7 @@ import {
   ScrollView,
   useWindowDimensions,
   TextInput,
+  Image,
 } from 'react-native';
 import React, {useEffect, useState, useContext} from 'react';
 import {
@@ -19,7 +20,8 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 
-import { AppContext } from '../context/appContext';
+import {AppContext} from '../context/appContext';
+import {findUser, getUser, loginUser} from '../apis/userControllers';
 
 const Register = ({navigation}) => {
   const [regUser, setRegUser] = useState({
@@ -38,6 +40,35 @@ const Register = ({navigation}) => {
     // signOut();
   }, []);
 
+  const signInWithEmail = async () => {
+    try {
+      setLoading(true);
+      const res = await findUser({email: regUser.email});
+      // Alert.alert(JSON.stringify(res))
+      if (res.user) {
+        if (res.user.provider == 'google') {
+          setLoading(false);
+          navigation.navigate('userExist', {
+            userInfo: {...res.user},
+          });
+        } else {
+          setLoading(false);
+          navigation.navigate('checkpass', {
+            userInfo: {...res.user},
+          });
+        }
+      } else {
+        setLoading(false);
+        navigation.navigate('getOtherData', {
+          userInfo: {email: regUser.email},
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log('frt : ', error);
+    }
+  };
+
   const signIn = async () => {
     try {
       setLoading(true);
@@ -45,8 +76,8 @@ const Register = ({navigation}) => {
       const Data = await GoogleSignin.signIn();
       // setUserInfo(Data.user);
       setLoading(false);
-      navigation.replace('getOtherData', {
-        userInfo: {...Data.user,googleUser:true},
+      navigation.navigate('getOtherData', {
+        userInfo: {...Data.user, googleUser: true},
       });
       console.log(Data.user);
     } catch (error) {
@@ -77,16 +108,37 @@ const Register = ({navigation}) => {
     <SafeAreaView
       style={{
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'stretch',
         backgroundColor: '#fff',
+        position: 'relative',
+        justifyContent: 'center',
       }}>
-      {/* <StatusBar barStyle="dark-content" backgroundColor="#fff" /> */}
-      <ScrollView keyboardShouldPersistTaps='always' style={{flex: 1}}>
-        <View style={[styles.form, {paddingHorizontal: width / 20}]}>
-          <Animated.View
-          
-          >
+      {loading && (
+        <>
+          <StatusBar barStyle="light-content" backgroundColor="#00000050" />
+          <View
+            style={{
+              flex: 1,
+              position: 'absolute',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#00000050',
+              alignSelf: 'center',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              
+            }}>
+            <ActivityIndicator color={'red'} size={30} collapsable={true} />
+          </View>
+        </>
+      )}
+      <ScrollView
+        keyboardShouldPersistTaps="always"
+        style={{flex: 1, paddingHorizontal: width / 20}}>
+        <View style={[styles.form]}>
+          <Animated.View>
             <Text
               style={{
                 fontSize: 20,
@@ -94,7 +146,7 @@ const Register = ({navigation}) => {
                 fontWeight: '600',
                 marginVertical: 20,
               }}>
-             Log in or sign up to Planed
+              Log in or sign up to Planed
             </Text>
           </Animated.View>
           <View style={{position: 'relative'}}>
@@ -108,9 +160,9 @@ const Register = ({navigation}) => {
               style={[
                 styles.input,
                 {
-                  borderTopRightRadius: 10,
-                  borderTopLeftRadius: 10,
+                  borderRadius: 10,
                   paddingTop: regUser.email.length !== 0 ? 30 : 10,
+                  textTransform: 'lowercase',
                 },
               ]}
             />
@@ -118,7 +170,7 @@ const Register = ({navigation}) => {
               <Text style={styles.label}>Email Id</Text>
             )}
           </View>
-          <View style={{position: 'relative'}}>
+          {/* <View style={{position: 'relative'}}>
             <TextInput
               placeholder="Password"
               placeholderTextColor={'grey'}
@@ -138,7 +190,7 @@ const Register = ({navigation}) => {
             {regUser.password.length !== 0 && (
               <Text style={styles.label}>Password</Text>
             )}
-          </View>
+          </View> */}
           <Text
             style={{
               color: '#00000070',
@@ -148,21 +200,13 @@ const Register = ({navigation}) => {
               paddingBottom: 15,
               paddingHorizontal: 5,
             }}>
-            Password should minimum 8 letters long and it consist of atleast 1
-            symbol,number and Capital Letter.
+            We'll not send your email anywhere,and we'll confirm it soon.
           </Text>
           <TouchableOpacity
-            style={{
-              paddingVertical: 15,
-              paddingHorizontal: 10,
-              borderWidth: 1,
-              borderColor: '#000',
-              borderRadius: 10,
-            }}
-            onPress={()=>{navigation.replace('getOtherData', {
-              userInfo: regUser,
-            });}}
-          >
+            style={styles.BTN}
+            onPress={() => {
+              signInWithEmail();
+            }}>
             <Text
               style={{
                 color: '#000',
@@ -173,28 +217,83 @@ const Register = ({navigation}) => {
               Continue
             </Text>
           </TouchableOpacity>
+          <Text
+            style={{
+              color: '#00000050',
+              alignSelf: 'center',
+              marginVertical: 15,
+              fontSize: 18,
+            }}>
+            OR
+          </Text>
+          <View style={{alignItems: 'center',flex:1,justifyContent:'space-evenly'}}>
+          <TouchableOpacity
+            style={[styles.BTN]}
+            onPress={() => {
+              signIn();
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                flex: 1,
+              }}>
+              <Image
+                source={require('../assets/images/phone.png')}
+                style={{
+                  aspectRatio: 1,
+                  height: 30,
+                  width: 30,
+                  marginRight: width/9,
+                }}
+              />
+
+              <Text
+                style={{
+                  color: '#000',
+                  fontSize: 18,
+                  alignSelf: 'center',
+                  fontWeight: '400',
+                }}>
+                Continue with phone
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.BTN]}
+            onPress={() => {
+              signIn();
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                flex: 1,
+              }}>
+              <Image
+                source={require('../assets/images/google.png')}
+                style={{
+                  aspectRatio: 1,
+                  height: 30,
+                  width: 30,
+                  marginRight: width/9,
+                }}
+              />
+
+              <Text
+                style={{
+                  color: '#000',
+                  fontSize: 18,
+                  alignSelf: 'center',
+                  fontWeight: '400',
+                }}>
+                Continue with Google
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
-        <Text
-          style={{
-            color: '#00000050',
-            alignSelf: 'center',
-            marginVertical: 15,
-            fontSize: 18,
-          }}>
-          OR
-        </Text>
-        <View style={{alignItems: 'center'}}>
-          {!loading ? (
-            <GoogleSigninButton
-              style={{width: 192, height: 48}}
-              size={GoogleSigninButton.Size.Wide}
-              color={GoogleSigninButton.Color.Dark}
-              onPress={signIn}
-              // disabled={this.state.isSigninInProgress}
-            />
-          ) : (
-            <ActivityIndicator size={30} color={'red'} />
-          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -223,5 +322,16 @@ const styles = StyleSheet.create({
     top: 5,
     left: 10,
     fontSize: 12,
+  },
+  BTN: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 10,
+    flexDirection: 'row',
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

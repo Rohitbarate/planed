@@ -4,7 +4,7 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  View
+  View,
 } from 'react-native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {NavigationContainer} from '@react-navigation/native';
@@ -12,8 +12,7 @@ import AuthStack from './src/navigation/AuthStack';
 import RootStack from './src/navigation/RootStack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppContext} from './src/context/appContext';
-// const baseUrl = process.env.BASE_URL   
-
+// const baseUrl = process.env.BASE_URL
 
 function App(): JSX.Element {
   const [loading, setLoading] = useState(false);
@@ -51,7 +50,7 @@ function App(): JSX.Element {
           <RootStack />
         )
       ) : (
-        <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <ActivityIndicator size={34} color="red" />
         </View>
       )}

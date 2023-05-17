@@ -19,7 +19,7 @@ const GetOtherData = ({navigation, route}) => {
     fName: userInfo.givenName || '',
     lName: userInfo.familyName || '',
     email: userInfo.email,
-    phoneNo: '',
+    mobileNo:userInfo.phone || '',
     // dob: '',
     photo: userInfo.photo,
     password:userInfo.password || ''
@@ -140,18 +140,18 @@ const GetOtherData = ({navigation, route}) => {
                 styles.input,
                 {
                   borderRadius: 10,
-                  paddingTop: finalUser.phoneNo.length !== 0 ? 30 : 10,
+                  paddingTop: finalUser.mobileNo.length !== 0 ? 30 : 10,
                 },
               ]}
-              value={finalUser.phoneNo}
+              value={finalUser.mobileNo}
               keyboardType="number-pad"
               maxLength={10}
-              onChangeText={phoneNo => setFinalUser({...finalUser, phoneNo})}
+              onChangeText={mobileNo => setFinalUser({...finalUser, mobileNo})}
               // defaultValue={user.email}
               placeholder="Phone number"
               placeholderTextColor={'#00000050'}
             />
-            {finalUser.phoneNo.length !== 0 && (
+            {finalUser.mobileNo.length !== 0 && (
               <Text style={styles.label}>Phone number</Text>
             )}
           </View>
