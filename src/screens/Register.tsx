@@ -22,6 +22,7 @@ import {
 
 import {AppContext} from '../context/appContext';
 import {findUser, getUser, loginUser} from '../apis/userControllers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Register = ({navigation}) => {
   const [regUser, setRegUser] = useState({
@@ -60,7 +61,7 @@ const Register = ({navigation}) => {
       } else {
         setLoading(false);
         navigation.navigate('getOtherData', {
-          userInfo: {email: regUser.email},
+          userInfo: {email: regUser.email,provider:'email'},
         });
       }
     } catch (error) {
@@ -74,11 +75,31 @@ const Register = ({navigation}) => {
       setLoading(true);
       await GoogleSignin.hasPlayServices();
       const Data = await GoogleSignin.signIn();
+      const res = await findUser({email: Data.user.email});
       // setUserInfo(Data.user);
+      if (res.user) {
+        if (res.user.provider == 'email') {
+          setLoading(false);
+          navigation.navigate('checkpass', {
+            userInfo: {...res.user},
+          });
+        } 
+        else {
+          setLoading(false);
+          login(res.user);
+          await AsyncStorage.setItem('user', JSON.stringify(res.user));
+          await AsyncStorage.setItem('token', JSON.stringify(res.token));
+        }
+      } else {
+        setLoading(false);
+        navigation.navigate('getOtherData', {
+          userInfo: {...Data.user,provider:'google'},
+        });
+      }
       setLoading(false);
-      navigation.navigate('getOtherData', {
-        userInfo: {...Data.user, googleUser: true},
-      });
+      // navigation.navigate('getOtherData', {
+      //   userInfo: {...Data.user,provider:'google'},
+      // });
       console.log(Data.user);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -154,6 +175,8 @@ const Register = ({navigation}) => {
               placeholder="Email Id"
               placeholderTextColor={'grey'}
               value={regUser.email}
+              keyboardType='email-address'
+              autoCapitalize='none'
               // selectTextOnFocus={true}
               // defaultValue={user.givenName}
               onChangeText={email => setRegUser({...regUser, email})}
@@ -162,7 +185,7 @@ const Register = ({navigation}) => {
                 {
                   borderRadius: 10,
                   paddingTop: regUser.email.length !== 0 ? 30 : 10,
-                  textTransform: 'lowercase',
+                  // textTransform: 'lowercase',
                 },
               ]}
             />

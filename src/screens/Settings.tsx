@@ -21,10 +21,13 @@ const Settings = () => {
 
   const getUser = async () => {
     let userData = await AsyncStorage.getItem('user');
+    let token = await AsyncStorage.getItem('token');
     if (userData) {
-      console.log({useDta: JSON.parse(userData)});
+      console.log({user: JSON.parse(userData)});
     }
-    console.log({userSetting: user});
+    if (token) {
+      console.log({token: JSON.parse(token)});
+    }
   };
 
   const signOut = async () => {
@@ -35,6 +38,7 @@ const Settings = () => {
       // }
       logout();
       await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('token');
       setLoading(false);
       console.log('sign out successfully');
     } catch (error) {
@@ -48,6 +52,7 @@ const Settings = () => {
       <Text style={{color: '#000'}}>{user.name}</Text>
       <Text style={{color: '#000'}}>{user.email}</Text>
       <Text style={{color: '#000'}}>{user.mobileNo}</Text>
+      {/* <Text style={{color: '#000'}}>{token}</Text> */}
       <TouchableOpacity
         style={{
           paddingVertical: 15,

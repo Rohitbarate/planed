@@ -7,47 +7,57 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useContext, useState} from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppContext } from '../context/appContext';
+import {AppContext} from '../context/appContext';
+import {registerNewUser} from '../apis/userControllers';
 
 const GetOtherData = ({navigation, route}) => {
   const userInfo = route.params.userInfo;
+  const [loading, setLoading] = useState(false);
+  const [showPass, setShowPass] = useState(true);
   const [finalUser, setFinalUser] = useState({
     fName: userInfo.givenName || '',
     lName: userInfo.familyName || '',
-    email: userInfo.email,
-    mobileNo:userInfo.phone || '',
+    email: userInfo.email || '',
+    mobileNo: userInfo.phone || '',
     // dob: '',
-    photo: userInfo.photo,
-    password:userInfo.password || ''
+    photo: userInfo.photo || null,
+    password: '',
+    provider: userInfo.provider,
   });
   const {width} = useWindowDimensions();
   // const {user,setUser}= useContext(AppContext)
   const {user, login} = useContext(AppContext);
 
-
-  const registerUser = async ()=>{
-      login(finalUser)
-     await AsyncStorage.setItem('user',JSON.stringify(finalUser))
-      // console.log({user});
-      
-  }
+  const registerUser = async () => {
+    setLoading(true);
+    const res = await registerNewUser(finalUser);
+    if (res) {
+      console.log(res);
+      login(finalUser);
+      await AsyncStorage.setItem('user', JSON.stringify(finalUser));
+      await AsyncStorage.setItem('token', JSON.stringify(res.token));
+      setLoading(false);
+    }
+    setLoading(false);
+  };
 
   return (
     // <KeyboardAvoidingView >
     <View style={{flex: 1, paddingTop: 20, backgroundColor: '#fff'}}>
-      <TouchableOpacity 
-        onPress={()=>navigation.replace('register')}
-        style={{alignSelf:'flex-start',marginLeft:10,padding:5 }}
-      >
+      <TouchableOpacity
+        onPress={() => navigation.replace('register')}
+        style={{alignSelf: 'flex-start', marginLeft: 10, padding: 5}}>
         <Icon name={'arrowleft'} size={24} color={'#000'} />
       </TouchableOpacity>
-      <ScrollView 
-      keyboardShouldPersistTaps='always'
-       showsVerticalScrollIndicator={false} style={{flex: 1}}>
+      <ScrollView
+        keyboardShouldPersistTaps="always"
+        showsVerticalScrollIndicator={false}
+        style={{flex: 1}}>
         <View style={[styles.form, {paddingHorizontal: width / 20}]}>
           <Text
             style={{
@@ -176,6 +186,36 @@ const GetOtherData = ({navigation, route}) => {
               <Text style={styles.label}>Birthday</Text>
             )}
           </View> */}
+          {userInfo.provider === 'email' && (
+            <View style={{position: 'relative'}}>
+              <TextInput
+                placeholder="Password"
+                secureTextEntry={showPass}
+                maxLength={15}
+                placeholderTextColor={'grey'}
+                value={finalUser.password}
+                onChangeText={password =>
+                  setFinalUser({...finalUser, password})
+                }
+                // defaultValue={user.familyName}
+                style={[
+                  styles.input,
+                  {
+                    borderRadius: 10,
+                    paddingTop: finalUser.password.length !== 0 ? 30 : 10,
+                  },
+                ]}
+              />
+              {finalUser.password.length !== 0 && (
+                <Text style={styles.label}>Password</Text>
+              )}
+              <Text
+                onPress={() => setShowPass(!showPass)}
+                style={styles.ShowBtn}>
+                {showPass ? 'SHOW' : 'HIDE'}
+              </Text>
+            </View>
+          )}
           <Text
             style={{
               color: '#000000',
@@ -184,16 +224,50 @@ const GetOtherData = ({navigation, route}) => {
               alignSelf: 'center',
               paddingBottom: 15,
             }}>
-            By selecting <Text style={{fontWeight:'600'}}>Agree and continue</Text>, I agree to Planed's <Text style={{textDecorationStyle:'dashed',textDecorationLine:'underline'}} >Terms of services, payments Terms of Service </Text>and acknowledge the <Text style={{textDecorationStyle:'dashed',textDecorationLine:'underline'}}>Privacy Policy</Text>
+            By selecting{' '}
+            <Text style={{fontWeight: '600'}}>Agree and continue</Text>, I agree
+            to Planed's{' '}
+            <Text
+              style={{
+                textDecorationStyle: 'dashed',
+                textDecorationLine: 'underline',
+              }}>
+              Terms of services, payments Terms of Service{' '}
+            </Text>
+            and acknowledge the{' '}
+            <Text
+              style={{
+                textDecorationStyle: 'dashed',
+                textDecorationLine: 'underline',
+              }}>
+              Privacy Policy
+            </Text>
           </Text>
           <TouchableOpacity
-        style={{paddingVertical:15,paddingHorizontal:10,borderWidth:1,borderColor:'#000',borderRadius:10,marginBottom:10}}
-        onPress={registerUser}
-        >
-          <Text style={{color:'#000',fontSize:18,alignSelf:'center',fontWeight:'500'}}>Agree and continue</Text>
-        </TouchableOpacity>
+            style={{
+              paddingVertical: 15,
+              paddingHorizontal: 10,
+              borderWidth: 1,
+              borderColor: '#000',
+              borderRadius: 10,
+              marginBottom: 10,
+            }}
+            onPress={registerUser}>
+            {!loading ? (
+              <Text
+                style={{
+                  color: '#000',
+                  fontSize: 18,
+                  alignSelf: 'center',
+                  fontWeight: '500',
+                }}>
+                Agree and continue
+              </Text>
+            ) : (
+              <ActivityIndicator color={'red'} size={30} collapsable={true} />
+            )}
+          </TouchableOpacity>
         </View>
-        
       </ScrollView>
     </View>
     // </KeyboardAvoidingView>
@@ -205,7 +279,7 @@ export default GetOtherData;
 const styles = StyleSheet.create({
   form: {
     flex: 1,
-    paddingTop:20
+    paddingTop: 20,
   },
   input: {
     borderColor: 'grey',
@@ -222,5 +296,11 @@ const styles = StyleSheet.create({
     top: 5,
     left: 10,
     fontSize: 12,
+  },
+  ShowBtn: {
+    color: '#000',
+    position: 'absolute',
+    right: 10,
+    top: 20,
   },
 });

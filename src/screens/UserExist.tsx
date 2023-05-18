@@ -92,7 +92,9 @@ const UserExist = ({navigation, route}) => {
           Continue with Google
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={{alignSelf: 'flex-start'}}>
+      <TouchableOpacity
+      onPress={()=>navigation.navigate('register')}
+      style={{alignSelf: 'flex-start'}}>
         <Text
           style={{
             textDecorationLine: 'underline',

@@ -6,8 +6,10 @@ const registerNewUser = async user => {
   const newUser = {
     name: user.fName + ' ' + user.lName,
     email: user.email,
-    mobileNo: user.phoneNo,
+    mobileNo: user.mobileNo,
+    photo: user.photo,
     password: user.password,
+    provider: user.provider,
   };
   try {
     let response = await fetch(`${baseUrl}/user/register`, {
