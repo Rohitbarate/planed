@@ -7,19 +7,32 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [notes,setNotes] = useState([])
+  const [alert,setAlert] = useState(null)
+  const [token,setToken] = useState(null)
 
-  const login = (userData) => {
+  const login = (userData,token) => {
     // Perform login logic
     setUser(userData);
+    console.log({t:token});
+    setToken(token)
   };
 
   const logout = () => {
     // Perform logout logic
     setUser(null);
+    setToken(null)
   };
 
-  const addNotes = ()=>{
-    
+  const addNotes = (note)=>{
+    // setNotes(note)
+  }
+
+  const fetchAllNotes = (notes)=>{
+    setNotes(notes)
+  }
+
+  const setAlertMsg = (msg)=>{
+    setAlert(msg)
   }
 
   // Define the value object that will be provided to the consumer components
@@ -27,7 +40,11 @@ export const AppProvider = ({ children }) => {
     user,
     login,
     logout,
-    notes
+    notes,
+    setAlertMsg,
+    alert,
+    fetchAllNotes,
+    token
   };
 
   return (

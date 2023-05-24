@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const BottomTab = ():JSX.Element => {
+const EditNote = () => {
   return (
     <View>
-      <Text>BottomTab</Text>
+      <Text>EditNote</Text>
     </View>
   )
 }
 
-export default BottomTab
+export default EditNote
 
 const styles = StyleSheet.create({})

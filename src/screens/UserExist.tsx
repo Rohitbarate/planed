@@ -1,6 +1,13 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useContext, useState} from 'react';
-import {findUser} from '../apis/userControllers';
+import {findUser, loginUser} from '../apis/userControllers';
 import {AppContext, login} from '../context/appContext';
 import {
   GoogleSignin,
@@ -20,21 +27,31 @@ const UserExist = ({navigation, route}) => {
       setLoading(true);
       await GoogleSignin.hasPlayServices();
       const Data = await GoogleSignin.signIn();
-      if (Data) {
-        let res = await findUser({email: Data.user.email});
-        if (!res.user) {
+      const res = await findUser({email: Data.user.email});
+      // setUserInfo(Data.user);
+      if (res.user) {
+        if (res.user.provider == 'email') {
           setLoading(false);
-          navigation.navigate('getOtherData', {
-            userInfo: {...Data.user},
+          navigation.navigate('checkpass', {
+            userInfo: {...res.user},
           });
         } else {
-          login(res.user);
-          await AsyncStorage.setItem('user', JSON.stringify(res.user));
+          const loggedUser = await loginUser(res.user);
+          login(loggedUser.user);
+          // console.log({loggedUser});
           setLoading(false);
-          console.log('data : ', res.user);
+          await AsyncStorage.setItem('user', JSON.stringify(loggedUser.user));
+          await AsyncStorage.setItem('token', JSON.stringify(loggedUser.token));
         }
+      } else {
+        setLoading(false);
+        navigation.navigate('getOtherData', {
+          userInfo: {...Data.user, provider: 'google'},
+        });
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the Register flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -78,23 +95,29 @@ const UserExist = ({navigation, route}) => {
         onPress={() => {
           signIn();
         }}>
-        <Image
-          source={require('../assets/images/google.png')}
-          style={{aspectRatio: 1, height: 30, width: 30, marginRight: 30}}
-        />
-        <Text
-          style={{
-            color: '#000',
-            fontSize: 18,
-            alignSelf: 'center',
-            fontWeight: '400',
-          }}>
-          Continue with Google
-        </Text>
+        {loading ? (
+          <ActivityIndicator color={'red'} size={30} />
+        ) : (
+          <>
+            <Image
+              source={require('../assets/images/google.png')}
+              style={{aspectRatio: 1, height: 30, width: 30, marginRight: 30}}
+            />
+            <Text
+              style={{
+                color: '#000',
+                fontSize: 18,
+                alignSelf: 'center',
+                fontWeight: '400',
+              }}>
+              Continue with Google
+            </Text>
+          </>
+        )}
       </TouchableOpacity>
       <TouchableOpacity
-      onPress={()=>navigation.navigate('register')}
-      style={{alignSelf: 'flex-start'}}>
+        onPress={() => navigation.navigate('register')}
+        style={{alignSelf: 'flex-start'}}>
         <Text
           style={{
             textDecorationLine: 'underline',

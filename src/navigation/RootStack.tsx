@@ -6,6 +6,7 @@ import MyNotes from '../screens/MyNotes';
 import NoteForm from '../screens/NoteForm';
 import Icon from 'react-native-vector-icons/Feather';
 import Settings from '../screens/Settings';
+import HomeStack from './HomeStack';
 
 const RootStack = () => {
     const Tab = createBottomTabNavigator();
@@ -15,20 +16,28 @@ const RootStack = () => {
       initialRouteName="MyNotes"
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: 'grey',
+          backgroundColor: '#000',
         },
         tabBarActiveTintColor: 'red',
-        tabBarInactiveTintColor: 'black',
+        tabBarInactiveTintColor: '#fff',
+        headerStyle:{
+          backgroundColor:'#000',
+        },
+        headerTitleStyle:{
+          color:'#fff'
+        }
       }}>
       <Tab.Screen
         name="MyNotes"
-        component={MyNotes}
+        component={HomeStack}
         options={{
+          headerShown:false,
           headerTitle: 'My Notes',
           tabBarLabel: 'My Notes',
           tabBarIcon: ({color, size}) => (
             <Icon name="list" color={color} size={size} />
           ),
+           
         }}
       />
       <Tab.Screen

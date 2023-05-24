@@ -12,12 +12,13 @@ import AuthStack from './src/navigation/AuthStack';
 import RootStack from './src/navigation/RootStack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppContext} from './src/context/appContext';
+import CustomAlert from './src/components/atoms/CustomAlert';
 // const baseUrl = process.env.BASE_URL
 
 function App(): JSX.Element {
   const [loading, setLoading] = useState(false);
   // const {user} = useContext(AppContext)
-  const {user, logout, login} = useContext(AppContext);
+  const {user, logout, login, alert} = useContext(AppContext);
 
   console.log('app => ', user);
 
@@ -43,6 +44,7 @@ function App(): JSX.Element {
   return (
     <NavigationContainer>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      {alert && <CustomAlert />}
       {!loading ? (
         user === null ? (
           <AuthStack />

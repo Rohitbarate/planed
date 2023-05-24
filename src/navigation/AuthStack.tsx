@@ -38,7 +38,9 @@ const AuthStack = () => {
        <Stack.Screen
         name="checkpass"
         component={ValidatePassword}
-       
+        options={{
+          animation:'slide_from_right'
+        }}
       />
     </Stack.Navigator>
   );

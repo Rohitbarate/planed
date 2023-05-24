@@ -12,21 +12,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Settings = () => {
   const [loading, setLoading] = useState(false);
-  // const {user,setUser} = useContext(AppContext);
   const {user, logout} = useContext(AppContext);
+  const [token,setToken] = useState('')
 
   useEffect(() => {
     getUser();
+    // console.log({user});
   }, []);
 
   const getUser = async () => {
     let userData = await AsyncStorage.getItem('user');
     let token = await AsyncStorage.getItem('token');
     if (userData) {
-      console.log({user: JSON.parse(userData)});
+      // console.log({userData: JSON.parse(userData)});
     }
     if (token) {
-      console.log({token: JSON.parse(token)});
+      // console.log({token: JSON.parse(token)});
+      setToken(token)
     }
   };
 
@@ -36,9 +38,9 @@ const Settings = () => {
       // if (user.password.length === 0) {
       await GoogleSignin.signOut();
       // }
-      logout();
       await AsyncStorage.removeItem('user');
       await AsyncStorage.removeItem('token');
+      logout();
       setLoading(false);
       console.log('sign out successfully');
     } catch (error) {
@@ -52,7 +54,6 @@ const Settings = () => {
       <Text style={{color: '#000'}}>{user.name}</Text>
       <Text style={{color: '#000'}}>{user.email}</Text>
       <Text style={{color: '#000'}}>{user.mobileNo}</Text>
-      {/* <Text style={{color: '#000'}}>{token}</Text> */}
       <TouchableOpacity
         style={{
           paddingVertical: 15,

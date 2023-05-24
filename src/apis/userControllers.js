@@ -1,5 +1,5 @@
 // import messageBox from "./messageBox/MessageBox";
-const baseUrl = process.env.BASE_URL || 'https://todoapp-api-16rf.onrender.com/data/v1';
+const baseUrl = process.env.BASE_URL || 'https://todoapp-api-16rf.onrender.com/data/v1'
 
 const registerNewUser = async user => {
   console.log(user);
@@ -44,7 +44,7 @@ const loginUser = async user => {
     });
     const data = await res.json();
     console.log('token', data.token);
-    localStorage.setItem('token', data.token);
+    // localStorage.setItem('token', data.token);
     return data;
   } catch (error) {
     console.log('frontend err : ', error);

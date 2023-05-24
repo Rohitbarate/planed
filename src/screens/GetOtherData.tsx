@@ -36,10 +36,10 @@ const GetOtherData = ({navigation, route}) => {
   const registerUser = async () => {
     setLoading(true);
     const res = await registerNewUser(finalUser);
-    if (res) {
-      console.log(res);
-      login(finalUser);
-      await AsyncStorage.setItem('user', JSON.stringify(finalUser));
+    if (res.user) {
+      // console.log(res);
+      login(res.user);
+      await AsyncStorage.setItem('user', JSON.stringify(res.user));
       await AsyncStorage.setItem('token', JSON.stringify(res.token));
       setLoading(false);
     }
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   ShowBtn: {
     color: '#000',
     position: 'absolute',
-    right: 10,
+    right: 15,
     top: 20,
   },
 });

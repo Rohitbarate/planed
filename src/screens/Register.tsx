@@ -23,6 +23,7 @@ import {
 import {AppContext} from '../context/appContext';
 import {findUser, getUser, loginUser} from '../apis/userControllers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomAlert from '../components/atoms/CustomAlert';
 
 const Register = ({navigation}) => {
   const [regUser, setRegUser] = useState({
@@ -30,10 +31,11 @@ const Register = ({navigation}) => {
     password: '',
   });
   const [loading, setLoading] = useState(false);
-  const {user, login} = useContext(AppContext);
+  const {user, login, alert, setAlertMsg,logout} = useContext(AppContext);
   const {width} = useWindowDimensions();
 
   useEffect(() => {
+    // setAlertMsg('nice its awesome');
     // GoogleSignin.configure({
     //   webClientId:
     //     '368860883862-ubfirn2urs8lr6kor75gruntdoubmhh9.apps.googleusercontent.com',
@@ -61,7 +63,7 @@ const Register = ({navigation}) => {
       } else {
         setLoading(false);
         navigation.navigate('getOtherData', {
-          userInfo: {email: regUser.email,provider:'email'},
+          userInfo: {email: regUser.email, provider: 'email'},
         });
       }
     } catch (error) {
@@ -83,25 +85,27 @@ const Register = ({navigation}) => {
           navigation.navigate('checkpass', {
             userInfo: {...res.user},
           });
-        } 
-        else {
+        } else {
+          const loggedUser = await loginUser(res.user);
+          login(loggedUser.user);
+          // console.log({loggedUser});
           setLoading(false);
-          login(res.user);
-          await AsyncStorage.setItem('user', JSON.stringify(res.user));
-          await AsyncStorage.setItem('token', JSON.stringify(res.token));
+          await AsyncStorage.setItem('user', JSON.stringify(loggedUser.user));
+          await AsyncStorage.setItem('token', JSON.stringify(loggedUser.token));
         }
       } else {
         setLoading(false);
         navigation.navigate('getOtherData', {
-          userInfo: {...Data.user,provider:'google'},
+          userInfo: {...Data.user, provider: 'google'},
         });
       }
       setLoading(false);
       // navigation.navigate('getOtherData', {
       //   userInfo: {...Data.user,provider:'google'},
       // });
-      console.log(Data.user);
+      // console.log(Data.user);
     } catch (error) {
+      setLoading(false);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the Register flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
@@ -118,7 +122,7 @@ const Register = ({navigation}) => {
   const signOut = async () => {
     try {
       await GoogleSignin.signOut();
-      setUser(null);
+      logout(null);
       console.log('sign out successfully');
     } catch (error) {
       console.error(error);
@@ -149,7 +153,6 @@ const Register = ({navigation}) => {
               left: 0,
               bottom: 0,
               right: 0,
-              
             }}>
             <ActivityIndicator color={'red'} size={30} collapsable={true} />
           </View>
@@ -175,8 +178,10 @@ const Register = ({navigation}) => {
               placeholder="Email Id"
               placeholderTextColor={'grey'}
               value={regUser.email}
-              keyboardType='email-address'
-              autoCapitalize='none'
+              keyboardType="email-address"
+              autoCapitalize="none"
+              // onBlur={}
+              textAlignVertical={regUser.email.length !== 0?"bottom":"center"}
               // selectTextOnFocus={true}
               // defaultValue={user.givenName}
               onChangeText={email => setRegUser({...regUser, email})}
@@ -184,8 +189,6 @@ const Register = ({navigation}) => {
                 styles.input,
                 {
                   borderRadius: 10,
-                  paddingTop: regUser.email.length !== 0 ? 30 : 10,
-                  // textTransform: 'lowercase',
                 },
               ]}
             />
@@ -249,74 +252,79 @@ const Register = ({navigation}) => {
             }}>
             OR
           </Text>
-          <View style={{alignItems: 'center',flex:1,justifyContent:'space-evenly'}}>
-          <TouchableOpacity
-            style={[styles.BTN]}
-            onPress={() => {
-              signIn();
+          <View
+            style={{
+              alignItems: 'center',
+              flex: 1,
+              justifyContent: 'space-evenly',
             }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                flex: 1,
+            <TouchableOpacity
+              style={[styles.BTN]}
+              onPress={() => {
+                setAlertMsg('its working');
               }}>
-              <Image
-                source={require('../assets/images/phone.png')}
+              <View
                 style={{
-                  aspectRatio: 1,
-                  height: 30,
-                  width: 30,
-                  marginRight: width/9,
-                }}
-              />
-
-              <Text
-                style={{
-                  color: '#000',
-                  fontSize: 18,
-                  alignSelf: 'center',
-                  fontWeight: '400',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  flex: 1,
                 }}>
-                Continue with phone
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.BTN]}
-            onPress={() => {
-              signIn();
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                flex: 1,
+                <Image
+                  source={require('../assets/images/phone.png')}
+                  style={{
+                    aspectRatio: 1,
+                    height: 30,
+                    width: 30,
+                    marginRight: width / 9,
+                  }}
+                />
+
+                <Text
+                  style={{
+                    color: '#000',
+                    fontSize: 18,
+                    alignSelf: 'center',
+                    fontWeight: '400',
+                  }}>
+                  Continue with phone
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.BTN]}
+              onPress={() => {
+                signIn();
               }}>
-              <Image
-                source={require('../assets/images/google.png')}
+              <View
                 style={{
-                  aspectRatio: 1,
-                  height: 30,
-                  width: 30,
-                  marginRight: width/9,
-                }}
-              />
-
-              <Text
-                style={{
-                  color: '#000',
-                  fontSize: 18,
-                  alignSelf: 'center',
-                  fontWeight: '400',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  flex: 1,
                 }}>
-                Continue with Google
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+                <Image
+                  source={require('../assets/images/google.png')}
+                  style={{
+                    aspectRatio: 1,
+                    height: 30,
+                    width: 30,
+                    marginRight: width / 9,
+                  }}
+                />
+
+                <Text
+                  style={{
+                    color: '#000',
+                    fontSize: 18,
+                    alignSelf: 'center',
+                    fontWeight: '400',
+                  }}>
+                  Continue with Google
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
