@@ -1,17 +1,71 @@
-import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useRef, useState} from 'react';
+import {
+  Alert,
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useRef, useState, useEffect, useContext} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ThreeDot from 'react-native-vector-icons/Entypo';
+import {deleteNote} from '../../apis/noteControllers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppContext } from '../../context/appContext';
 
-const TodoCard = ({todo, id, i}) => {
+const TodoCard = ({todo, id, i,fetchNotesFunc}) => {
   const [showOptions, setShowOptions] = useState(false);
+  const [token, setToken] = useState(null);
   const animation = useRef(new Animated.Value(0)).current;
+  const {delNote} = useContext(AppContext);
 
-  const showOptionshandler = () => {
-    Animated.spring(animation, {
-      toValue: showOptions ? 0 : 1,
-      useNativeDriver: true,
-    }).start();
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  const getToken = async () => {
+    let token = await AsyncStorage.getItem('token');
+    if (!token) {
+      Alert.alert('login first....!');
+    } else {
+      setToken(JSON.parse(token));
+    }
+  };
+
+  const deleteNoteHandler = async()=>{
+    const res = await deleteNote(token, id);
+    console.log({res});
+    deleteNote(id);
+    fetchNotesFunc(token)
+  }
+
+  const showOptionshandler = todo => {
+    // Animated.spring(animation, {
+    //   toValue: showOptions ? 0 : 1,
+    //   useNativeDriver: true,
+    // }).start();
+    Alert.alert(
+      todo.label.toUpperCase(),
+      i + '. ' + todo.title,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Edit',
+          onPress: () => console.log('edit Pressed'),
+        },
+        {
+          text: 'Delete',
+          onPress: () => deleteNoteHandler(),
+        },
+      ],
+      {
+        cancelable: true,
+      },
+    );
   };
 
   return (
@@ -40,7 +94,7 @@ const TodoCard = ({todo, id, i}) => {
         <TouchableOpacity
           onPress={() => {
             setShowOptions(!showOptions);
-            showOptionshandler();
+            showOptionshandler(todo);
           }}>
           <ThreeDot
             name="dots-three-vertical"
@@ -129,5 +183,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     position: 'relative',
     overflow: 'hidden',
+    backfaceVisibility: 'hidden',
+    backgroundColor: '#9acee8',
   },
 });

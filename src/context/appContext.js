@@ -27,6 +27,10 @@ export const AppProvider = ({ children }) => {
     // setNotes(note)
   }
 
+  const delNote = (note)=>{
+    setNotes(note.filter((n)=>{n.id !== note}))
+  }
+
   const fetchAllNotes = (notes)=>{
     setNotes(notes)
   }
@@ -44,7 +48,8 @@ export const AppProvider = ({ children }) => {
     setAlertMsg,
     alert,
     fetchAllNotes,
-    token
+    token,
+    delNote
   };
 
   return (

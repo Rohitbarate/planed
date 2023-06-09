@@ -15,6 +15,8 @@ import {AppContext} from './src/context/appContext';
 import CustomAlert from './src/components/atoms/CustomAlert';
 // const baseUrl = process.env.BASE_URL
 
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+
 function App(): JSX.Element {
   const [loading, setLoading] = useState(false);
   // const {user} = useContext(AppContext)
@@ -41,9 +43,21 @@ function App(): JSX.Element {
     getUser();
   }, []);
 
+  const adUnitId = __DEV__
+    ? TestIds.BANNER
+    : 'ca-app-pub-9923230267052642/1773924431';
+
   return (
     <NavigationContainer>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+        // onAdFailedToLoad={}
+      />
       {alert && <CustomAlert />}
       {!loading ? (
         user === null ? (

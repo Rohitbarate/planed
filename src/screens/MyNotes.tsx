@@ -6,6 +6,7 @@ import {
   StatusBar,
   Alert,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useContext, useState, useEffect} from 'react';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -13,6 +14,7 @@ import {getNotes} from '../apis/noteControllers';
 import {AppContext} from '../context/appContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TodoCard from '../components/atoms/TodoCard';
+// import Icon from 'react-native-vector-icons/FontAwesome'
 
 const MyNotes = (): JSX.Element => {
   const {user, fetchAllNotes,notes} = useContext(AppContext);
@@ -53,9 +55,9 @@ const MyNotes = (): JSX.Element => {
   };
 
   return (
-    <View style={{flex: 1,backgroundColor:'#fff'}}>
+    <View style={{flex: 1,backgroundColor:'#c2dfee'}}>
       <StatusBar
-        backgroundColor={'#000'}
+        backgroundColor={'#58abd4'}
         barStyle={'light-content'}
         showHideTransition="fade"
       />
@@ -63,6 +65,7 @@ const MyNotes = (): JSX.Element => {
       // !loading ? 
       (
         notes ? (
+          <View style={{flex:1,position:'relative'}}>
           <FlatList
             data={notes}
             // refreshControl={
@@ -73,9 +76,19 @@ const MyNotes = (): JSX.Element => {
             refreshing={loading}
             keyExtractor={(item)=>item._id}
             renderItem={({item,index}) => {
-              return <TodoCard todo={item.note} id={item._id} i={index+1} />
+              return <TodoCard todo={item.note} id={item._id} i={index+1} fetchNotesFunc={fetchNotes} />
             }}
           />
+
+          {/* Add note button */}
+            {/* <TouchableOpacity
+              style={styles.addNoteBtn}
+            >
+              <Icon name='plus' size={30} color="#fff" />
+            </TouchableOpacity> */}
+
+
+          </View>
         ) : (
           <Text style={{color: '#000'}}>Notes you add appear here</Text>
         )
@@ -91,5 +104,15 @@ const MyNotes = (): JSX.Element => {
 export default MyNotes;
 
 const styles = StyleSheet.create({
- 
+  addNoteBtn:{
+    position:'absolute',
+    backgroundColor:'#000',
+    height:60,
+    width:60,
+    alignItems:'center',
+    justifyContent:"center",
+    borderRadius:50,
+    bottom:20,
+    right:20
+  }
 });

@@ -13,14 +13,15 @@ const Stack = createNativeStackNavigator()
         initialRouteName='myNotes'
      screenOptions={{
         headerStyle:{
-            backgroundColor:'#000',
+            backgroundColor:'#58abd4',
+            
           },
           headerTitleStyle:{
             color:'#fff'
           }
      }}
     >
-        <Stack.Screen name='myNotes' component={MyNotes} options={{headerTitle:'My Notes'}} />
+        <Stack.Screen name='myNotes' component={MyNotes} options={{headerTitle:'My Notes',headerShadowVisible:false}} />
         <Stack.Screen name='editNote' component={EditNote} options={{headerTitle:'Edit Note'}} />
     </Stack.Navigator>
   )

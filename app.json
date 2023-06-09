@@ -1,4 +1,7 @@
 {
   "name": "planed",
-  "displayName": "planed"
+  "displayName": "planed",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-9923230267052642~1450319362"
+  }
 }
