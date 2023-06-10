@@ -7,110 +7,175 @@ import {
   SafeAreaView,
   ScrollView,
   KeyboardAvoidingView,
+  Alert,
+  ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
+import {addNotes} from '../apis/noteControllers';
+import {AppContext} from '../context/appContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const NoteForm = () => {
+const NoteForm = ({navigation}) => {
   const [note, setNote] = useState({
     title: '',
     description: '',
     label: '',
   });
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  const getToken = async () => {
+    let token = await AsyncStorage.getItem('token');
+    if (!token) {
+      Alert.alert('login first....!');
+    } else {
+      setToken(JSON.parse(token));
+    }
+  };
+
+  const addNoteHandler = async () => {
+    setLoading(true);
+    const res = await addNotes(token, note);
+    if (res.message.type == 'success') {
+      setLoading(false);
+      navigation.navigate('MyNotes');
+      // console.log({res});
+      ToastAndroid.show('New Note Added Successfully..!',ToastAndroid.SHORT)
+    } else {
+      setLoading(false);
+      console.log({res});
+      Alert.alert(res);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <KeyboardAvoidingView>
-        <Text
-          style={{
-            color: '#000',
-            fontWeight: '600',
-            fontSize: 26,
-            marginVertical: 20,
-          }}>
-          Add Note
-        </Text>
-        <View style={styles.form}>
-          <View style={{position: 'relative'}}>
-            <TextInput
-              placeholder="label e.g. WORK"
-              placeholderTextColor={'grey'}
-              value={note.label}
-              keyboardType="default"
-              autoCapitalize="none"
-              // onBlur={}
-              textAlignVertical={note.label.length !== 0 ? 'bottom' : 'center'}
-              // selectTextOnFocus={true}
-              // defaultValue={user.givenName}
-              onChangeText={label => setNote({...note, label})}
-              style={[
-                styles.input,
-                {
-                  borderRadius: 10,
-                },
-              ]}
-            />
-            {note.label.length !== 0 && <Text style={styles.label}>label</Text>}
-          </View>
-          <View style={{position: 'relative'}}>
-            <TextInput
-              placeholder="title e.g. Complete home work"
-              placeholderTextColor={'grey'}
-              value={note.title}
-              keyboardType="default"
-              autoCapitalize="none"
-              // onBlur={}
-              textAlignVertical={note.title.length !== 0 ? 'bottom' : 'center'}
-              // selectTextOnFocus={true}
-              // defaultValue={user.givenName}
-              onChangeText={title => setNote({...note, title})}
-              style={[
-                styles.input,
-                {
-                  borderRadius: 10,
-                },
-              ]}
-            />
-            {note.title.length !== 0 && <Text style={styles.label}>title</Text>}
-          </View>
-          <View style={{position: 'relative'}}>
-            <TextInput
-              placeholder="description"
-              placeholderTextColor={'grey'}
-              value={note.description}
-              keyboardType="default"
-              autoCapitalize="none"
-              // onBlur={}
-              textAlignVertical={
-                note.description.length !== 0 ? 'bottom' : 'center'
+          <Text
+            style={{
+              color: '#000',
+              fontWeight: '600',
+              fontSize: 26,
+              marginVertical: 20,
+            }}>
+            Add Note
+          </Text>
+          <View style={styles.form}>
+            <View style={{position: 'relative'}}>
+              <TextInput
+                placeholder="label e.g. WORK"
+                placeholderTextColor={'grey'}
+                value={note.label}
+                keyboardType="default"
+                autoCapitalize="none"
+                // onBlur={}
+                textAlignVertical={
+                  note.label.length !== 0 ? 'bottom' : 'center'
+                }
+                // selectTextOnFocus={true}
+                // defaultValue={user.givenName}
+                onChangeText={label => setNote({...note, label})}
+                style={[
+                  styles.input,
+                  {
+                    borderRadius: 10,
+                  },
+                ]}
+              />
+              {note.label.length !== 0 && (
+                <Text style={styles.label}>label</Text>
+              )}
+            </View>
+            <View style={{position: 'relative'}}>
+              <TextInput
+                placeholder="title e.g. Complete home work"
+                placeholderTextColor={'grey'}
+                value={note.title}
+                keyboardType="default"
+                autoCapitalize="none"
+                // onBlur={}
+                textAlignVertical={
+                  note.title.length !== 0 ? 'bottom' : 'center'
+                }
+                // selectTextOnFocus={true}
+                // defaultValue={user.givenName}
+                onChangeText={title => setNote({...note, title})}
+                style={[
+                  styles.input,
+                  {
+                    borderRadius: 10,
+                  },
+                ]}
+              />
+              {note.title.length !== 0 && (
+                <Text style={styles.label}>title</Text>
+              )}
+            </View>
+            <View style={{position: 'relative'}}>
+              <TextInput
+                placeholder="description"
+                placeholderTextColor={'grey'}
+                value={note.description}
+                keyboardType="default"
+                autoCapitalize="none"
+                // onBlur={}
+                textAlignVertical={
+                  note.description.length !== 0 ? 'bottom' : 'center'
+                }
+                // selectTextOnFocus={true}
+                // defaultValue={user.givenName}
+                onChangeText={description => setNote({...note, description})}
+                style={[
+                  styles.input,
+                  {
+                    borderRadius: 10,
+                  },
+                ]}
+              />
+              {note.description.length !== 0 && (
+                <Text style={styles.label}>description</Text>
+              )}
+            </View>
+            <TouchableOpacity
+              disabled={
+                note.title.length !== 0 &&
+                note.description.length !== 0 &&
+                note.label.length !== 0
+                  ? false
+                  : true
               }
-              // selectTextOnFocus={true}
-              // defaultValue={user.givenName}
-              onChangeText={description => setNote({...note, description})}
               style={[
-                styles.input,
+                styles.BTN,
                 {
-                  borderRadius: 10,
+                  opacity:
+                    note.title.length >= 2 &&
+                    note.description.length >= 2 &&
+                    note.label.length >= 2
+                      ? 1
+                      : 0.3,
                 },
               ]}
-            />
-            {note.description.length !== 0 && (
-              <Text style={styles.label}>description</Text>
-            )}
-          </View>
-          <TouchableOpacity style={styles.BTN} onPress={() => {}}>
-            <Text
-              style={{
-                color: '#000',
-                fontSize: 18,
-                alignSelf: 'center',
-                fontWeight: '500',
+              onPress={() => {
+                addNoteHandler();
               }}>
-              Continue
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
+          { loading? <ActivityIndicator  />  :<Text
+                style={{
+                  color: '#fff',
+                  fontSize: 18,
+                  alignSelf: 'center',
+                  fontWeight: '500',
+                }}>
+                Add Note
+              </Text>}
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
   );
@@ -163,5 +228,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#58abd4',
   },
 });

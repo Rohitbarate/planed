@@ -1,0 +1,4 @@
+# remaining things
+   1. Add tryCatch to all api req's
+   2. Remove all commented data 
+   3. 

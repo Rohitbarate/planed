@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -12,25 +13,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Settings = () => {
   const [loading, setLoading] = useState(false);
-  const {user, logout} = useContext(AppContext);
-  const [token,setToken] = useState('')
+  const {user, logout,token} = useContext(AppContext);
+  // const [token,setToken] = useState('')
 
   useEffect(() => {
-    getUser();
+    // getUser();
     // console.log({user});
   }, []);
 
-  const getUser = async () => {
-    let userData = await AsyncStorage.getItem('user');
-    let token = await AsyncStorage.getItem('token');
-    if (userData) {
-      // console.log({userData: JSON.parse(userData)});
-    }
-    if (token) {
-      // console.log({token: JSON.parse(token)});
-      setToken(token)
-    }
-  };
+  // const getUser = async () => {
+  //   let userData = await AsyncStorage.getItem('user');
+  //   let token = await AsyncStorage.getItem('token');
+  //   if (userData) {
+  //     // console.log({userData: JSON.parse(userData)});
+  //   }
+  //   if (token) {
+  //     // console.log({token: JSON.parse(token)});
+  //     setToken(token)
+  //   }
+  // };
 
   const signOut = async () => {
     try {
@@ -42,7 +43,7 @@ const Settings = () => {
       await AsyncStorage.removeItem('token');
       logout();
       setLoading(false);
-      console.log('sign out successfully');
+      ToastAndroid.show('sign out successfully',ToastAndroid.SHORT)
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -54,6 +55,7 @@ const Settings = () => {
       <Text style={{color: '#000'}}>{user.name}</Text>
       <Text style={{color: '#000'}}>{user.email}</Text>
       <Text style={{color: '#000'}}>{user.mobileNo}</Text>
+      <Text style={{color: '#000'}}>token :{token}</Text>
       <TouchableOpacity
         style={{
           paddingVertical: 15,

@@ -3,6 +3,7 @@ import {
   Animated,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -13,7 +14,7 @@ import {deleteNote} from '../../apis/noteControllers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppContext } from '../../context/appContext';
 
-const TodoCard = ({todo, id, i,fetchNotesFunc}) => {
+const TodoCard = ({todo, id, i,fetchNotesFunc,setLoading,navigation}) => {
   const [showOptions, setShowOptions] = useState(false);
   const [token, setToken] = useState(null);
   const animation = useRef(new Animated.Value(0)).current;
@@ -33,10 +34,20 @@ const TodoCard = ({todo, id, i,fetchNotesFunc}) => {
   };
 
   const deleteNoteHandler = async()=>{
+    setLoading(true)
     const res = await deleteNote(token, id);
-    console.log({res});
+    // console.log({res});
+    ToastAndroid.show(res.message.msg,ToastAndroid.SHORT)
     deleteNote(id);
     fetchNotesFunc(token)
+    setLoading(false)
+  }
+
+  const editNoteHandler = ()=>{
+    navigation.navigate('editNote',{
+      preNote:todo,
+      ID:id
+    })
   }
 
   const showOptionshandler = todo => {
@@ -55,7 +66,7 @@ const TodoCard = ({todo, id, i,fetchNotesFunc}) => {
         },
         {
           text: 'Edit',
-          onPress: () => console.log('edit Pressed'),
+          onPress: () => editNoteHandler(),
         },
         {
           text: 'Delete',

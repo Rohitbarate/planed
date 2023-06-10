@@ -12,9 +12,9 @@ export const AppProvider = ({ children }) => {
 
   const login = (userData,token) => {
     // Perform login logic
-    setUser(userData);
-    console.log({t:token});
     setToken(token)
+    setUser(userData);
+    // console.log({t:token});
   };
 
   const logout = () => {

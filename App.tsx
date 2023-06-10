@@ -33,11 +33,16 @@ function App(): JSX.Element {
     const getUser = async () => {
       setLoading(true);
       const userData = await AsyncStorage.getItem('user');
+      const token = await AsyncStorage.getItem('token');
       if (!userData) {
         setLoading(false);
         return logout();
       }
-      login(JSON.parse(userData));
+      if (!token) {
+        setLoading(false);
+        return logout();
+      }
+      login(JSON.parse(userData),JSON.parse(token));
       setLoading(false);
     };
     getUser();
@@ -50,14 +55,7 @@ function App(): JSX.Element {
   return (
     <NavigationContainer>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <BannerAd
-        unitId={adUnitId}
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        requestOptions={{
-          requestNonPersonalizedAdsOnly: true,
-        }}
-        // onAdFailedToLoad={}
-      />
+     
       {alert && <CustomAlert />}
       {!loading ? (
         user === null ? (
