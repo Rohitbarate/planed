@@ -55,7 +55,16 @@ function App(): JSX.Element {
   return (
     <NavigationContainer>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-     
+      <View>
+        <BannerAd
+          unitId={adUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+          // onAdFailedToLoad={}
+        />
+      </View>
       {alert && <CustomAlert />}
       {!loading ? (
         user === null ? (

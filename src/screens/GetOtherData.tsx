@@ -38,7 +38,7 @@ const GetOtherData = ({navigation, route}) => {
     const res = await registerNewUser(finalUser);
     if (res.user) {
       // console.log(res);
-      login(res.user);
+      login(res.user,res.token);
       await AsyncStorage.setItem('user', JSON.stringify(res.user));
       await AsyncStorage.setItem('token', JSON.stringify(res.token));
       setLoading(false);

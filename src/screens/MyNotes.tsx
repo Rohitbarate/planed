@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   ToastAndroid,
+  Image,
 } from 'react-native';
 import React, {useContext, useState, useEffect} from 'react';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -36,16 +37,16 @@ const MyNotes = ({navigation}): JSX.Element => {
       setLoading(true);
       const res = await getNotes(token);
       // console.log({res});
-      ToastAndroid.show('Note Fetched Successfully..!',ToastAndroid.SHORT)
+      ToastAndroid.show('Note Fetched Successfully..!', ToastAndroid.SHORT);
       if (res.notes) {
         fetchAllNotes(res.notes);
+        console.log({notes: res.notes});
         // await AsyncStorage.setItem('notes', res.notes);
         setLoading(false);
         // setNotes(res.notes);
-        console.log({notes: res.notes});
       } else {
+        console.log({notes: res.notes});
         setLoading(false);
-        
       }
     } catch (error) {
       setLoading(false);
@@ -64,19 +65,37 @@ const MyNotes = ({navigation}): JSX.Element => {
         barStyle={'light-content'}
         showHideTransition="fade"
       />
-      <View style={{paddingVertical:10}}>
-        <BannerAd
-          unitId={adUnitId}
-          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-          // onAdFailedToLoad={}
-        />
-      </View>
+
+      <Text
+        style={{
+          color: '#000',
+          fontWeight: '600',
+          fontSize: 26,
+          marginVertical: 10,
+          marginLeft: 16,
+        }}>
+        My Notes
+      </Text>
       {
         // !loading ?
-        notes ? (
+        notes.length == 0 ? (
+          <View
+            style={{
+              alignSelf: 'center',
+              alignItems: 'center',
+              flex: 1,
+              justifyContent: 'center',
+            }}>
+            <Image
+              source={require('../assets/images/emptyNotes.png')}
+              style={{height: 200, aspectRatio: '1'}}
+            />
+            <Text style={{color: '#00000090', fontWeight: '700', fontSize: 18}}>
+              Notes you add appear here
+            </Text>
+            <Text onPress={()=>navigation.navigate('AddNote')} style={{color: '#58abd4', fontWeight: '800', fontSize: 20,marginTop:10}}>Add Note</Text>
+          </View>
+        ) : (
           <View style={{flex: 1, position: 'relative'}}>
             <FlatList
               data={notes}
@@ -108,8 +127,6 @@ const MyNotes = ({navigation}): JSX.Element => {
               <Icon name='plus' size={30} color="#fff" />
             </TouchableOpacity> */}
           </View>
-        ) : (
-          <Text style={{color: '#000'}}>Notes you add appear here</Text>
         )
         // : (
         //   <ActivityIndicator color={'red'} size={28} style={{marginTop: 20}} />

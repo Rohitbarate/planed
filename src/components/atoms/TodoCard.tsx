@@ -33,6 +33,19 @@ const TodoCard = ({todo, id, i,fetchNotesFunc,setLoading,navigation}) => {
     }
   };
 
+  const deleteNoteConfrm = ()=>{
+    Alert.alert('You want to delete this note','',[
+      {
+        text:'cancel',
+        style:'cancel'
+      },
+      {
+        text:'delete',
+        onPress:()=>deleteNoteHandler()
+      }
+    ])
+  }
+
   const deleteNoteHandler = async()=>{
     setLoading(true)
     const res = await deleteNote(token, id);
@@ -61,7 +74,7 @@ const TodoCard = ({todo, id, i,fetchNotesFunc,setLoading,navigation}) => {
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Cancel pressed'),
+          // onPress: () => console.log('Cancel pressed'),
           style: 'cancel',
         },
         {
@@ -70,7 +83,7 @@ const TodoCard = ({todo, id, i,fetchNotesFunc,setLoading,navigation}) => {
         },
         {
           text: 'Delete',
-          onPress: () => deleteNoteHandler(),
+          onPress: () => deleteNoteConfrm(),
         },
       ],
       {
@@ -97,7 +110,7 @@ const TodoCard = ({todo, id, i,fetchNotesFunc,setLoading,navigation}) => {
             textAlignVertical: 'center',
             color: '#fff',
             textTransform: 'uppercase',
-            fontSize: 12,
+            fontSize: 10,
             alignSelf: 'flex-start',
           }}>
           {todo.label}
@@ -109,7 +122,7 @@ const TodoCard = ({todo, id, i,fetchNotesFunc,setLoading,navigation}) => {
           }}>
           <ThreeDot
             name="dots-three-vertical"
-            size={20}
+            size={18}
             color="#000"
             style={{alignSelf: 'flex-end', marginBottom: 5}}
           />
@@ -118,7 +131,7 @@ const TodoCard = ({todo, id, i,fetchNotesFunc,setLoading,navigation}) => {
       <Text
         style={{
           color: '#000',
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: '600',
           textTransform: 'capitalize',
           // flex: 0.9,
@@ -135,7 +148,7 @@ const TodoCard = ({todo, id, i,fetchNotesFunc,setLoading,navigation}) => {
       />
 
       <Text
-        style={{color: '#00000090', fontSize: 16, textTransform: 'capitalize'}}>
+        style={{color: '#00000080', fontSize: 14, textTransform: 'capitalize'}}>
         {todo.description}
       </Text>
       {/* more options div */}

@@ -32,7 +32,7 @@ const NoteForm = ({navigation}) => {
   const getToken = async () => {
     let token = await AsyncStorage.getItem('token');
     if (!token) {
-      Alert.alert('login first....!');
+      Alert.alert('login first....! NF');
     } else {
       setToken(JSON.parse(token));
     }
@@ -43,9 +43,10 @@ const NoteForm = ({navigation}) => {
     const res = await addNotes(token, note);
     if (res.message.type == 'success') {
       setLoading(false);
-      navigation.navigate('MyNotes');
+      setNote({...note,label:'',title:'',description:''})
       // console.log({res});
       ToastAndroid.show('New Note Added Successfully..!',ToastAndroid.SHORT)
+      navigation.navigate('MyNotes');
     } else {
       setLoading(false);
       console.log({res});
@@ -72,8 +73,6 @@ const NoteForm = ({navigation}) => {
                 placeholder="label e.g. WORK"
                 placeholderTextColor={'grey'}
                 value={note.label}
-                keyboardType="default"
-                autoCapitalize="none"
                 // onBlur={}
                 textAlignVertical={
                   note.label.length !== 0 ? 'bottom' : 'center'
@@ -98,7 +97,7 @@ const NoteForm = ({navigation}) => {
                 placeholderTextColor={'grey'}
                 value={note.title}
                 keyboardType="default"
-                autoCapitalize="none"
+                autoCapitalize="words"
                 // onBlur={}
                 textAlignVertical={
                   note.title.length !== 0 ? 'bottom' : 'center'
@@ -123,7 +122,7 @@ const NoteForm = ({navigation}) => {
                 placeholderTextColor={'grey'}
                 value={note.description}
                 keyboardType="default"
-                autoCapitalize="none"
+                autoCapitalize="sentences"
                 // onBlur={}
                 textAlignVertical={
                   note.description.length !== 0 ? 'bottom' : 'center'
@@ -144,9 +143,9 @@ const NoteForm = ({navigation}) => {
             </View>
             <TouchableOpacity
               disabled={
-                note.title.length !== 0 &&
-                note.description.length !== 0 &&
-                note.label.length !== 0
+                note.title.length >= 2 &&
+                note.description.length >= 2 &&
+                note.label.length >= 2
                   ? false
                   : true
               }
@@ -203,13 +202,15 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   input: {
-    borderColor: 'grey',
+    borderColor: '#000',
     borderWidth: 1,
     color: '#000',
     paddingHorizontal: 10,
     height: 60,
     fontSize: 18,
     marginVertical: 10,
+    // textTransform:'capitalize'
+    
   },
   label: {
     color: '#00000070',

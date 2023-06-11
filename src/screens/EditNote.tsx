@@ -34,7 +34,8 @@ const EditNote = ({navigation, route}) => {
       console.log({token, ID, note});
       const res = await editNote(token, ID, note);
       if (res) {
-        console.log({res});
+        // console.log({res});
+        setNote({...note, label: '', title: '', description: ''});
         ToastAndroid.show('Note Edited Successfully..!', ToastAndroid.SHORT);
         navigation.goBack();
       }
@@ -44,6 +45,24 @@ const EditNote = ({navigation, route}) => {
       console.log({error});
     }
   };
+
+  const isFormValid = () => {
+    if (
+      note.label.length > 2 &&
+      note.title.length > 2 &&
+      note.description.length > 2
+    ) {
+      return (
+        note.label !== preNote.label ||
+        note.title !== preNote.title ||
+        note.description !== preNote.description
+      );
+    }else{
+      return false
+    }
+  };
+
+  console.log(isFormValid());
 
   return (
     <SafeAreaView style={styles.container}>
@@ -126,28 +145,11 @@ const EditNote = ({navigation, route}) => {
               )}
             </View>
             <TouchableOpacity
-              disabled={
-                (note.title.length !== 0 &&
-                  note.description.length !== 0 &&
-                  note.label.length !== 0 &&
-                  note.title !== preNote.title) ||
-                note.description !== preNote.description ||
-                note.label !== preNote.label
-                  ? false
-                  : true
-              }
+              disabled={!isFormValid()}
               style={[
                 styles.BTN,
                 {
-                  opacity:
-                    (note.title.length >= 2 &&
-                      note.description.length >= 2 &&
-                      note.label.length >= 2 &&
-                      note.title !== preNote.title) ||
-                    note.description !== preNote.description ||
-                    note.label !== preNote.label
-                      ? 1
-                      : 0.3,
+                  opacity: isFormValid() ? 1 : 0.5,
                 },
               ]}
               onPress={() => {

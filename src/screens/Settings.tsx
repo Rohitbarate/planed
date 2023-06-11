@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ToastAndroid,
+  Image,
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -13,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Settings = () => {
   const [loading, setLoading] = useState(false);
-  const {user, logout,token} = useContext(AppContext);
+  const {user, logout, token} = useContext(AppContext);
   // const [token,setToken] = useState('')
 
   useEffect(() => {
@@ -43,7 +44,7 @@ const Settings = () => {
       await AsyncStorage.removeItem('token');
       logout();
       setLoading(false);
-      ToastAndroid.show('sign out successfully',ToastAndroid.SHORT)
+      ToastAndroid.show('sign out successfully', ToastAndroid.SHORT);
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -51,27 +52,56 @@ const Settings = () => {
   };
 
   return (
-    <View style={{flex: 1, alignItems: 'center'}}>
-      <Text style={{color: '#000'}}>{user.name}</Text>
-      <Text style={{color: '#000'}}>{user.email}</Text>
-      <Text style={{color: '#000'}}>{user.mobileNo}</Text>
-      <Text style={{color: '#000'}}>token :{token}</Text>
-      <TouchableOpacity
+    <View style={{flex: 1, paddingHorizontal: 16}}>
+      <Text
         style={{
-          paddingVertical: 15,
-          paddingHorizontal: 10,
-          borderWidth: 1,
-          borderColor: '#000',
-          borderRadius: 10,
-          marginTop: 20,
-        }}
-        onPress={signOut}>
+          color: '#000',
+          fontWeight: '600',
+          fontSize: 26,
+          marginVertical: 10,
+        }}>
+        Profile
+      </Text>
+      <View
+        style={{
+          borderBottomColor: 'grey',
+          borderBottomWidth: 1,
+          paddingVertical: 10,
+          marginVertical: 10,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}>
+        <Image
+          source={
+            user.photo
+              ? {uri: user.photo}
+              : require('../assets/images/defaultProfile.png')
+          }
+          resizeMode="cover"
+          style={{
+            aspectRatio: 1,
+            width: 70,
+            borderRadius: 50,
+            borderWidth: 4,
+            borderColor: '#58abd4',
+            marginRight: 10,
+          }}
+        />
+        <View>
+          <Text style={{color: '#000', fontSize: 20}}>{user.name}</Text>
+          <Text style={{color: 'grey'}}>{user.email}</Text>
+        </View>
+      </View>
+
+      <Text style={{color: '#000'}}>Mobile No :{user.mobileNo}</Text>
+      {/* <Text style={{color: '#000'}}>token :{token}</Text> */}
+      <TouchableOpacity style={styles.BTN} onPress={signOut}>
         {loading ? (
           <ActivityIndicator size={20} color="red" />
         ) : (
           <Text
             style={{
-              color: '#000',
+              color: '#fff',
               fontSize: 18,
               alignSelf: 'center',
               fontWeight: '500',
@@ -80,19 +110,23 @@ const Settings = () => {
           </Text>
         )}
       </TouchableOpacity>
-      {/* {userData && (
-        <>
-          <Text style={{color: '#000'}}>
-            {userData.} {userData.lName}
-          </Text>
-          <Text style={{color: '#000'}}>{user.email}</Text>
-          <Text style={{color: '#000'}}>{user.phoneNo}</Text>
-        </>
-      )} */}
     </View>
   );
 };
 
 export default Settings;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  BTN: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 10,
+    flexDirection: 'row',
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#58abd4',
+  },
+});

@@ -19,11 +19,13 @@ const RootStack = () => {
   const Tab = createBottomTabNavigator();
   const {height, width} = useWindowDimensions();
 
+
   return (
     <Tab.Navigator
       // tabBar={props => <MyTabBar {...props} />}
       initialRouteName="MyNotes"
       screenOptions={{
+        headerShown:false,
         tabBarHideOnKeyboard:true,
         tabBarStyle: {
           backgroundColor: '#58abd4',
@@ -58,7 +60,7 @@ const RootStack = () => {
           headerTitle: 'Add Note',
           tabBarLabel: 'Add Note',
           tabBarIcon: ({color, size}) => (
-            <Icon name="plus-square" color={color} size={size} />
+            <Icon name="plus-circle" color={color} size={size} />
           ),
         }}
       />

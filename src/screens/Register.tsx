@@ -87,7 +87,7 @@ const Register = ({navigation}) => {
           });
         } else {
           const loggedUser = await loginUser(res.user);
-          login(loggedUser.user);
+          login(loggedUser.user,loggedUser.token);
           // console.log({loggedUser});
           setLoading(false);
           await AsyncStorage.setItem('user', JSON.stringify(loggedUser.user));

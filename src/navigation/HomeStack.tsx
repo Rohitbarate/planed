@@ -11,6 +11,7 @@ const HomeStack = () => {
     <Stack.Navigator
       initialRouteName="myNotes"
       screenOptions={{
+        headerShown:false,
         headerStyle: {
           backgroundColor: '#58abd4',
         },
