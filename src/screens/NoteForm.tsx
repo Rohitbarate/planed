@@ -73,12 +73,9 @@ const NoteForm = ({navigation}) => {
                 placeholder="label e.g. WORK"
                 placeholderTextColor={'grey'}
                 value={note.label}
-                // onBlur={}
                 textAlignVertical={
                   note.label.length !== 0 ? 'bottom' : 'center'
                 }
-                // selectTextOnFocus={true}
-                // defaultValue={user.givenName}
                 onChangeText={label => setNote({...note, label})}
                 style={[
                   styles.input,
@@ -98,12 +95,9 @@ const NoteForm = ({navigation}) => {
                 value={note.title}
                 keyboardType="default"
                 autoCapitalize="words"
-                // onBlur={}
                 textAlignVertical={
                   note.title.length !== 0 ? 'bottom' : 'center'
                 }
-                // selectTextOnFocus={true}
-                // defaultValue={user.givenName}
                 onChangeText={title => setNote({...note, title})}
                 style={[
                   styles.input,
@@ -123,12 +117,9 @@ const NoteForm = ({navigation}) => {
                 value={note.description}
                 keyboardType="default"
                 autoCapitalize="sentences"
-                // onBlur={}
                 textAlignVertical={
                   note.description.length !== 0 ? 'bottom' : 'center'
                 }
-                // selectTextOnFocus={true}
-                // defaultValue={user.givenName}
                 onChangeText={description => setNote({...note, description})}
                 style={[
                   styles.input,

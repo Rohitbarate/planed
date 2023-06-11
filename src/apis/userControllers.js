@@ -1,5 +1,5 @@
 // import messageBox from "./messageBox/MessageBox";
-const baseUrl = process.env.BASE_URL || 'https://todoapp-api-16rf.onrender.com/data/v1'
+const baseUrl = 'https://todoapp-api-16rf.onrender.com/data/v1'
 
 const registerNewUser = async user => {
   console.log(user);

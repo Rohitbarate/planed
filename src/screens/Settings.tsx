@@ -15,24 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Settings = () => {
   const [loading, setLoading] = useState(false);
   const {user, logout, token} = useContext(AppContext);
-  // const [token,setToken] = useState('')
 
-  useEffect(() => {
-    // getUser();
-    // console.log({user});
-  }, []);
-
-  // const getUser = async () => {
-  //   let userData = await AsyncStorage.getItem('user');
-  //   let token = await AsyncStorage.getItem('token');
-  //   if (userData) {
-  //     // console.log({userData: JSON.parse(userData)});
-  //   }
-  //   if (token) {
-  //     // console.log({token: JSON.parse(token)});
-  //     setToken(token)
-  //   }
-  // };
 
   const signOut = async () => {
     try {

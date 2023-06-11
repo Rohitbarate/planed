@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useContext, useState} from 'react';
 import {findUser, loginUser} from '../apis/userControllers';
-import {AppContext, login} from '../context/appContext';
+import {AppContext} from '../context/appContext';
 import {
   GoogleSignin,
   GoogleSigninButton,

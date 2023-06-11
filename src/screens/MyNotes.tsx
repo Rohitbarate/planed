@@ -93,7 +93,16 @@ const MyNotes = ({navigation}): JSX.Element => {
             <Text style={{color: '#00000090', fontWeight: '700', fontSize: 18}}>
               Notes you add appear here
             </Text>
-            <Text onPress={()=>navigation.navigate('AddNote')} style={{color: '#58abd4', fontWeight: '800', fontSize: 20,marginTop:10}}>Add Note</Text>
+            <Text
+              onPress={() => navigation.navigate('AddNote')}
+              style={{
+                color: '#58abd4',
+                fontWeight: '800',
+                fontSize: 20,
+                marginTop: 10,
+              }}>
+              Add Note
+            </Text>
           </View>
         ) : (
           <View style={{flex: 1, position: 'relative'}}>
@@ -119,18 +128,8 @@ const MyNotes = ({navigation}): JSX.Element => {
                 );
               }}
             />
-
-            {/* Add note button */}
-            {/* <TouchableOpacity
-              style={styles.addNoteBtn}
-            >
-              <Icon name='plus' size={30} color="#fff" />
-            </TouchableOpacity> */}
           </View>
         )
-        // : (
-        //   <ActivityIndicator color={'red'} size={28} style={{marginTop: 20}} />
-        // )
       }
     </View>
   );

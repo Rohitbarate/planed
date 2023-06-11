@@ -165,27 +165,6 @@ const GetOtherData = ({navigation, route}) => {
               <Text style={styles.label}>Phone number</Text>
             )}
           </View>
-          {/* <View style={{position: 'relative', marginVertical: 15}}>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  borderRadius: 10,
-                  paddingTop: finalUser.dob.length !== 0 ? 30 : 10,
-                },
-              ]}
-              value={finalUser.dob}
-              keyboardType="number-pad"
-              maxLength={10}
-              onChangeText={dob => setFinalUser({...finalUser, dob})}
-              // defaultValue={user.email}
-              placeholder="Birthday"
-              placeholderTextColor={'#00000050'}
-            />
-            {finalUser.dob.length !== 0 && (
-              <Text style={styles.label}>Birthday</Text>
-            )}
-          </View> */}
           {userInfo.provider === 'email' && (
             <View style={{position: 'relative'}}>
               <TextInput

@@ -31,17 +31,8 @@ const Register = ({navigation}) => {
     password: '',
   });
   const [loading, setLoading] = useState(false);
-  const {user, login, alert, setAlertMsg,logout} = useContext(AppContext);
+  const {user, login, alert, setAlertMsg, logout} = useContext(AppContext);
   const {width} = useWindowDimensions();
-
-  useEffect(() => {
-    // setAlertMsg('nice its awesome');
-    // GoogleSignin.configure({
-    //   webClientId:
-    //     '368860883862-ubfirn2urs8lr6kor75gruntdoubmhh9.apps.googleusercontent.com',
-    // });
-    // signOut();
-  }, []);
 
   const signInWithEmail = async () => {
     try {
@@ -87,7 +78,7 @@ const Register = ({navigation}) => {
           });
         } else {
           const loggedUser = await loginUser(res.user);
-          login(loggedUser.user,loggedUser.token);
+          login(loggedUser.user, loggedUser.token);
           // console.log({loggedUser});
           setLoading(false);
           await AsyncStorage.setItem('user', JSON.stringify(loggedUser.user));
@@ -100,10 +91,6 @@ const Register = ({navigation}) => {
         });
       }
       setLoading(false);
-      // navigation.navigate('getOtherData', {
-      //   userInfo: {...Data.user,provider:'google'},
-      // });
-      // console.log(Data.user);
     } catch (error) {
       setLoading(false);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -116,16 +103,6 @@ const Register = ({navigation}) => {
         // some other error happened
         console.log(error);
       }
-    }
-  };
-
-  const signOut = async () => {
-    try {
-      await GoogleSignin.signOut();
-      logout(null);
-      console.log('sign out successfully');
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -180,10 +157,9 @@ const Register = ({navigation}) => {
               value={regUser.email}
               keyboardType="email-address"
               autoCapitalize="none"
-              // onBlur={}
-              textAlignVertical={regUser.email.length !== 0?"bottom":"center"}
-              // selectTextOnFocus={true}
-              // defaultValue={user.givenName}
+              textAlignVertical={
+                regUser.email.length !== 0 ? 'bottom' : 'center'
+              }
               onChangeText={email => setRegUser({...regUser, email})}
               style={[
                 styles.input,
@@ -196,27 +172,6 @@ const Register = ({navigation}) => {
               <Text style={styles.label}>Email Id</Text>
             )}
           </View>
-          {/* <View style={{position: 'relative'}}>
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor={'grey'}
-              value={regUser.password}
-              onChangeText={password => setRegUser({...regUser, password})}
-              // defaultValue={user.familyName}
-              style={[
-                styles.input,
-                {
-                  borderBottomLeftRadius: 10,
-                  borderBottomRightRadius: 10,
-                  borderTopWidth: 0,
-                  paddingTop: regUser.password.length !== 0 ? 30 : 10,
-                },
-              ]}
-            />
-            {regUser.password.length !== 0 && (
-              <Text style={styles.label}>Password</Text>
-            )}
-          </View> */}
           <Text
             style={{
               color: '#00000070',
