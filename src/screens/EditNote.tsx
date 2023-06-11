@@ -15,10 +15,16 @@ import React, {useState, useEffect, useContext} from 'react';
 import {addNotes, editNote} from '../apis/noteControllers';
 import {AppContext} from '../context/appContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  RewardedAd,
+  RewardedAdEventType,
+  TestIds,
+} from 'react-native-google-mobile-ads';
 
 const EditNote = ({navigation, route}) => {
   const {preNote, ID} = route.params;
 
+  // const [isAdLoaded, setIsAdLoaded] = useState(false);
   const [note, setNote] = useState({
     title: preNote.title,
     description: preNote.description,
@@ -28,9 +34,27 @@ const EditNote = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const {token} = useContext(AppContext);
 
+  // Ad unit code
+  const adUnitId = __DEV__
+    ? TestIds.REWARDED
+    : 'ca-app-pub-9923230267052642/1684502514';
+
+  const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+    keywords: ['fashion', 'clothing', 'computer'],
+  });
+  rewarded.load();
+
+  // useEffect(() => {
+
+  // });
+
   const editNoteHandler = async () => {
     setLoading(true);
     try {
+      rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+        rewarded.show();
+      });
       console.log({token, ID, note});
       const res = await editNote(token, ID, note);
       if (res) {
@@ -57,13 +81,12 @@ const EditNote = ({navigation, route}) => {
         note.title !== preNote.title ||
         note.description !== preNote.description
       );
-    }else{
-      return false
+    } else {
+      return false;
     }
   };
 
-  console.log(isFormValid());
-
+  // console.log(isFormValid());
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView keyboardShouldPersistTaps="handled">

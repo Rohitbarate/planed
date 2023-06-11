@@ -13,9 +13,15 @@ import RootStack from './src/navigation/RootStack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AppContext} from './src/context/appContext';
 import CustomAlert from './src/components/atoms/CustomAlert';
-// const baseUrl = process.env.BASE_URL
+import {
+  AdEventType,
+  AppOpenAd,
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from 'react-native-google-mobile-ads';
+import SplashScreen from 'react-native-splash-screen';
 
-import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 
 function App(): JSX.Element {
   const [loading, setLoading] = useState(false);
@@ -24,11 +30,26 @@ function App(): JSX.Element {
 
   console.log('app => ', user);
 
+  const appOpenAdd = __DEV__
+    ? TestIds.APP_OPEN
+    : 'ca-app-pub-9923230267052642/2510499026';
+
+  const appOpenAd = AppOpenAd.createForAdRequest(appOpenAdd, {
+    requestNonPersonalizedAdsOnly: true,
+    keywords: ['fashion', 'clothing'],
+  });
+
   useEffect(() => {
+    SplashScreen.hide()
     GoogleSignin.configure({
       webClientId:
         '368860883862-ubfirn2urs8lr6kor75gruntdoubmhh9.apps.googleusercontent.com',
     });
+    appOpenAd.load();
+
+    appOpenAd.addAdEventListener(AdEventType.LOADED,()=>{
+      appOpenAd.show();
+    })
 
     const getUser = async () => {
       setLoading(true);
@@ -42,7 +63,7 @@ function App(): JSX.Element {
         setLoading(false);
         return logout();
       }
-      login(JSON.parse(userData),JSON.parse(token));
+      login(JSON.parse(userData), JSON.parse(token));
       setLoading(false);
     };
     getUser();
