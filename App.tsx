@@ -22,7 +22,6 @@ import {
 } from 'react-native-google-mobile-ads';
 import SplashScreen from 'react-native-splash-screen';
 
-
 function App(): JSX.Element {
   const [loading, setLoading] = useState(false);
   // const {user} = useContext(AppContext)
@@ -40,16 +39,16 @@ function App(): JSX.Element {
   });
 
   useEffect(() => {
-    SplashScreen.hide()
     GoogleSignin.configure({
       webClientId:
         '368860883862-ubfirn2urs8lr6kor75gruntdoubmhh9.apps.googleusercontent.com',
     });
+    SplashScreen.hide();
     appOpenAd.load();
 
-    appOpenAd.addAdEventListener(AdEventType.LOADED,()=>{
+    appOpenAd.addAdEventListener(AdEventType.LOADED, () => {
       appOpenAd.show();
-    })
+    });
 
     const getUser = async () => {
       setLoading(true);
